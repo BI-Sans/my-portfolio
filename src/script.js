@@ -17,36 +17,53 @@ document.addEventListener("DOMContentLoaded", () => {
   function carousel() {
     return {
         currentSlide: 0,
-        totalSlides: 8,
+
+        totalSlides: 9,
+
         touchStartX: 0,
+
         touchEndX: 0,
-        
+
         nextSlide() {
-            this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+            this.currentSlide =
+                (this.currentSlide + 1) % this.totalSlides;
         },
-        
+
         prevSlide() {
-            this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+            this.currentSlide =
+                (this.currentSlide - 1 + this.totalSlides) %
+                this.totalSlides;
         },
-        
+
         goToSlide(index) {
             this.currentSlide = index;
         },
-        
-        touchStart(e) {
-            this.touchStartX = e.changedTouches[0].screenX;
+
+        touchStart(event) {
+            this.touchStartX = event.touches[0].clientX;
+            this.touchEndX = event.touches[0].clientX;
         },
-        
-        touchMove(e) {
-            this.touchEndX = e.changedTouches[0].screenX;
+
+        touchMove(event) {
+            this.touchEndX = event.touches[0].clientX;
         },
-        
+
         touchEnd() {
-            if (this.touchStartX - this.touchEndX > 50) {
+            const swipeDistance =
+                this.touchStartX - this.touchEndX;
+
+            const minimumSwipeDistance = 50;
+
+            if (swipeDistance > minimumSwipeDistance) {
                 this.nextSlide();
-            } else if (this.touchEndX - this.touchStartX > 50) {
+            } else if (
+                swipeDistance < -minimumSwipeDistance
+            ) {
                 this.prevSlide();
             }
+
+            this.touchStartX = 0;
+            this.touchEndX = 0;
         }
-    }
+    };
 }
